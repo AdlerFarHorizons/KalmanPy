@@ -52,8 +52,8 @@ def demo_kalman_xy():
 
     observed_x = true_x + np.random.normal(0.0, 400.0, N+1)
     #observed_y = true_y + 0.03*np.random.random(N)*true_y
-    plt.plot(time, observed_x, 'r-')
-    plt.plot(time, true_x, 'y-')
+    plt.plot(time, observed_x, 'r-', label="Observed altitude")
+    plt.plot(time, true_x, 'y-', label="True altitude")
     result = []
     R = 0.1
     for i in range(N+1):#for meas in observed_x:#, observed_y):
@@ -81,7 +81,10 @@ def demo_kalman_xy():
                 '''))
         result.append(x.flat[0])
     kalman_x = result
-    plt.plot(time, kalman_x, 'g-')
+    plt.plot(time, kalman_x, 'g-', label="Kalman estimate")
+    legend = plt.legend(loc='upper left', shadow=True)
+    plt.xlabel("Time (minutes)")
+    plt.ylabel("Altitude (feet)")
     plt.show()
 
 demo_kalman_xy()
