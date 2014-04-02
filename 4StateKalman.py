@@ -36,8 +36,12 @@ def kalman(x, P, measurement, R, motion, Q, F, H):
     return x, P
 
 def demo_kalman_xy():
-    x = np.matrix('0. 0. 0. 0.').T 
-    P = np.matrix(np.eye(4))*10000 # initial uncertainty
+    x = np.matrix('0. 1200. 0.').T 
+    P = np.matrix('''
+        1000. 0. 0.;
+        0. 1000. 0.;
+        0. 0. 0.
+    ''') # initial uncertainty
 
     N = 100
     c = 0
@@ -50,12 +54,10 @@ def demo_kalman_xy():
         #true_y.append()
         c += 1
 
-    observed_x = true_x + np.random.normal(0.0, 400.0, N+1)
-    #observed_y = true_y + 0.03*np.random.random(N)*true_y
-    plt.plot(time, observed_x, 'r-', label="Observed altitude")
-    plt.plot(time, true_x, 'y-', label="True altitude")
     result = []
-    R = 0.1
+    R = 100**2
+    observed_x = true_x + np.random.normal(0.0, np.sqrt(R), N+1)
+    #observed_y = true_y + 0.03*np.random.random(N)*true_y
     for i in range(N+1):#for meas in observed_x:#, observed_y):
         if i == 0:
             meas = observed_x[0]
@@ -63,28 +65,44 @@ def demo_kalman_xy():
             meas = observed_x[i-1]
             
         x, P = kalman(x, P, meas, R,
-              motion = np.matrix('0. 5. 0. 0.').T,
+              motion = np.matrix('0. 0. 0.').T,
               Q = np.multiply(np.matrix('''
-                0. 0. 0. 0.;
-                0. 0. 0. 0.;
-                0. 0. 0. 0.;
-                0. 0. 0. 973089.
-                '''), .0001*1200), #sample values for Q_4,4 are given
+                1. 1. 0.;
+                1. 1. 0.;
+                0. 0. 0.
+                '''), 10**2),
               F = np.matrix('''
-                1. 1. 0.5 1.;
-                0. 1. 1.  1.;
-                0. 0. 1.  0.;
-                0. 0. 0.  0.3
-                '''), # sample values for F_4,4 are given
+                1. 1. 0.;
+                0. 1. 0.;
+                0. 0. 0.
+                '''),
               H = np.matrix('''
-                1. 0. 0. 0.
+                1. 0. 0.
                 '''))
         result.append(x.flat[0])
     kalman_x = result
+
+    #plot the estimate vs the process
+    #plt.plot(time, observed_x, 'r-', label="Observed altitude")
+    plt.plot(time, true_x, 'y-', label="True altitude")
     plt.plot(time, kalman_x, 'g-', label="Kalman estimate")
     legend = plt.legend(loc='upper left', shadow=True)
     plt.xlabel("Time (minutes)")
     plt.ylabel("Altitude (feet)")
     plt.show()
+    
+    #plot the errors
+    error = np.subtract(kalman_x, true_x)
+    print(np.average(error))
+
+    plt.plot(time, error, 'y-', label="Error")
+    #legend = plt.legend(loc='upper left', shadow=True)
+    plt.xlabel("Time (minutes)")
+    plt.ylabel("Error (feet)")
+    plt.show()
+
+    
+
+    
 
 demo_kalman_xy()
