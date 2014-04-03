@@ -45,13 +45,29 @@ def demo_kalman_xy():
 
     N = 100
     c = 0
-    time = []
-    true_x = []
-    #true_y = []
+    
+    # LN - I modified the following "truth" model to include velocity process
+    # noise.
+    # BTW, it should be referred to as a "simulation" of the actual process
+    # (a fake balloon flight, if you will) instead.
+    # People will more likely understand what this means.
+    # 
+    # I configured the simulation using a state model with velocity process
+    # noise, like:
+    # x(i) = Fx(i-1) + noise(i) where x is two-state vector and noise is added
+    # only to the v state and F is the state transition matrix. I wrote the
+    # iteration equations out explicitly rather than with matrices.
+    
+    time = [0]
+    true_x = [0.0]
+    true_v = [1200.0]
+    sigma_pv = 10.0
+    c = 1
     while c <= N:
-        true_x.append(1200*c)
+        # Process simulation: state update equations
+        true_x.append(true_x[c-1] + true_v[c-1])
+        true_v.append(true_v[c-1] + np.random.normal(0.0, sigma_pv))
         time.append(c)
-        #true_y.append()
         c += 1
 
     result = []
