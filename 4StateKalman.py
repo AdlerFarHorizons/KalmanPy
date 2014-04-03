@@ -84,17 +84,25 @@ def demo_kalman_xy():
 
     #plot the estimate vs the process
     #plt.plot(time, observed_x, 'r-', label="Observed altitude")
+    
+    # LN - Showing two plots: Need to explicitly select separate figures
+    # with plt.figure(figure_index_number) and configure them. After that's
+    # done, then do plt.show(), but only once and only after done configuring
+    # both plots.
+    # See http://stackoverflow.com/questions/7744697/how-to-show-two-figures-using-matplotlib
+    # there are two answers, I followed the second one.
+    
+    plt.figure(1)
     plt.plot(time, true_x, 'y-', label="True altitude")
     plt.plot(time, kalman_x, 'g-', label="Kalman estimate")
     legend = plt.legend(loc='upper left', shadow=True)
     plt.xlabel("Time (minutes)")
     plt.ylabel("Altitude (feet)")
-    plt.show()
     
     #plot the errors
     error = np.subtract(kalman_x, true_x)
     print(np.average(error))
-
+    plt.figure(2)
     plt.plot(time, error, 'y-', label="Error")
     #legend = plt.legend(loc='upper left', shadow=True)
     plt.xlabel("Time (minutes)")
