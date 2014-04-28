@@ -134,7 +134,7 @@ def demo_kalman_xy():
     #plot the error
     plt.figure(2)
     plt.plot(time, result[0,:] - true_X[0,:], 'y-', label="Altitude Error")
-    legend = plt.legend(loc='upper left', shadow=True)
+    #legend = plt.legend(loc='upper left', shadow=True)
     plt.xlabel("Time (minutes)")
     plt.ylabel("Altitude Error (feet)")
     plt.show()
