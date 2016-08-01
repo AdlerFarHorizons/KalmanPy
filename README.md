@@ -1,4 +1,4 @@
-SensorKalmanFilter
+KalmanPy
 ==================
 <h3>Branch: "LouThreeState"</h3>
 
